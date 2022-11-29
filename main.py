@@ -59,6 +59,7 @@ class AddEdit(QWidget):
         self.con = sqlite3.connect("coffee.sqlite")
         self.cur = self.con.cursor()
         self.pushButton.setText('Добавить')
+        self.pushButton_2.setText('Изменить')
         self.label.setText('Сорт: ')
         self.label_2.setText('Прожарка: ')
         self.label_3.setText('Молотый/в зернах: ')
@@ -66,6 +67,38 @@ class AddEdit(QWidget):
         self.label_5.setText('Цена в рублях: ')
         self.label_6.setText('Обьем упаковки: ')
         self.pushButton.clicked.connect(self.add)
+        self.pushButton_2.clicked.connect(self.change)
+
+    def change(self):
+        a1 = self.lineEdit.text()
+        a2 = self.lineEdit_2.text()
+        a3 = self.lineEdit_3.text()
+        a4 = self.lineEdit_4.text()
+        a5 = self.lineEdit_5.text()
+        a6 = self.lineEdit_6.text()
+        if a1 == '':
+            return
+        if a2 == '':
+            a2 = [elem[0] for elem in self.cur.execute("""SELECT roast_degree FROM coffee
+                                    WHERE variety_name = """ + "'" + a1 + "'").fetchall()][0]
+        if a3 == '':
+            a3 = [elem[0] for elem in self.cur.execute("""SELECT ground_inbeans FROM coffee
+                                    WHERE variety_name = """ + "'" + a1 + "'").fetchall()][0]
+        if a4 == '':
+            a4 = [elem[0] for elem in self.cur.execute("""SELECT taste_description FROM coffee
+                                    WHERE variety_name = """ + "'" + a1 + "'").fetchall()][0]
+        if a5 == '':
+            a5 = [elem[0] for elem in self.cur.execute("""SELECT price_rub FROM coffee
+                                    WHERE variety_name = """ + "'" + a1 + "'").fetchall()][0]
+        if a6 == '':
+            a6 = [elem[0] for elem in self.cur.execute("""SELECT package_volume_gramms FROM coffee
+                                    WHERE variety_name = """ + "'" + a1 + "'").fetchall()][0]
+        self.cur.execute("""DELETE from coffee
+                            WHERE variety_name=?""", (a1,))
+        self.cur.execute("""INSERT INTO coffee(variety_name, roast_degree, ground_inbeans, taste_description,
+                                                        price_rub, package_volume_gramms)
+                                    VALUES(?, ?, ?, ?, ?, ?);""", (a1, a2, a3, a4, a5, a6,))
+        self.con.commit()
 
     def add(self):
         a1 = self.lineEdit.text()
