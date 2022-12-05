@@ -2,14 +2,18 @@ import sys
 import sqlite3
 from PyQt5 import uic
 from PyQt5.QtWidgets import QWidget, QApplication
+from main21 import Ui_Form
+from addEditCoffeeForm import Ui_MainWindow
+import data
 
 
-class Example(QWidget):
+class Example(QWidget, Ui_Form):
     def __init__(self):
         super().__init__()
-        self.con = sqlite3.connect("coffee.sqlite")
+        self.setupUi(self)
+        self.con = sqlite3.connect("data/coffee.sqlite")
         self.cur = self.con.cursor()
-        uic.loadUi('main.ui', self)
+        # uic.loadUi('main.ui', self)
         self.comboBox.addItem('Сорта кофе')
         self.comboBox.addItems([elem[0] for elem in self.cur.execute("""SELECT variety_name FROM coffee""").fetchall()])
         self.pushButton.setText('Показать информацию')
@@ -52,11 +56,12 @@ class Example(QWidget):
         self.addedit.show()
 
 
-class AddEdit(QWidget):
+class AddEdit(QWidget, Ui_MainWindow):
     def __init__(self, *args):
         super().__init__()
-        uic.loadUi('addEditCoffeeForm.ui', self)
-        self.con = sqlite3.connect("coffee.sqlite")
+        self.setupUi(self)
+        # uic.loadUi('addEditCoffeeForm.ui', self)
+        self.con = sqlite3.connect("data/coffee.sqlite")
         self.cur = self.con.cursor()
         self.pushButton.setText('Добавить')
         self.pushButton_2.setText('Изменить')

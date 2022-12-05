@@ -1,0 +1,4 @@
+sys
+sqlite3
+uic из PyQt5
+QWidget, QApplication из PyQt5.QtWidgets
